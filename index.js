@@ -5,10 +5,11 @@ const svg = canvas.append('svg')
     .attr('width',600);
 
 
+const group = svg.append('g').attr('transform', 'translate(70,100)');
 
 // append shapes 
 
-const rect = svg.append('rect')
+group.append('rect')
     .attr('height',100)
     .attr('width',200)
     .attr('fill','blue')
@@ -17,21 +18,21 @@ const rect = svg.append('rect')
 
 
 
-svg.append('circle')
+    group.append('circle')
     .attr('r', 50)
     .attr('cx', 300)
     .attr('cy', 70)
     .attr('fill', 'pink')
 
 
-svg.append('line')
+    group.append('line')
     .attr('x1', 370)
     .attr('x2', 400)
     .attr('y1', 20)
     .attr('y2', 120)
     .attr('stroke', 'red')
 
-    svg.append('text')
+    group.append('text')
         .attr('x', 20)
         .attr('y', 200)
         .attr('fill', 'red')
