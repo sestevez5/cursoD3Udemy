@@ -1,41 +1,64 @@
-const canvas = d3.select(".canvas");
-
-const svg = canvas.append('svg')
-    .attr('height',600)
-    .attr('width',600);
-
-
-const group = svg.append('g').attr('transform', 'translate(70,100)');
-
-// append shapes 
-
-group.append('rect')
-    .attr('height',100)
-    .attr('width',200)
-    .attr('fill','blue')
-    .attr('x',20)
-    .attr('y',20);
+// select svg container first
+const svgWidth = 600;
+const svgHeight = 600;
+const margin = { top: 20, right: 20, bottom: 20, left: 20};
+const graphWidth = svgWidth-margin.left -margin.right;
+const graphHeight = svgHeight-margin.top -margin.bottom;
 
 
+// set attributes of svg
+const svg = d3.select('.canvas')
+    .append('svg')
+        .attr('width',svgWidth)
+        .attr('height',svgHeight)
+        .attr('class', "svg");
 
-    group.append('circle')
-    .attr('r', 50)
-    .attr('cx', 300)
-    .attr('cy', 70)
-    .attr('fill', 'pink')
+    
+// set attributes of svg
+const graph = svg.append('g')
+    .attr('width', graphWidth )
+    .attr('height', graphHeight)
+    .attr('transform', `translate(${margin.left}, ${margin.top})`);
+    
+// Add a rect to be able to set the background color
+graph.append('rect')
+.attr('width', graphWidth )
+.attr('height', graphHeight)
+.attr('fill', "yellow");
 
+// Acces to datas.
+d3.json('menu.json').then(data => 
+    {
 
-    group.append('line')
-    .attr('x1', 370)
-    .attr('x2', 400)
-    .attr('y1', 20)
-    .attr('y2', 120)
-    .attr('stroke', 'red')
+        // Set variable related to appearace
+        const min = d3.min(data, d => d.orders );
+        const max = d3.max(data, d => d.orders );
+        const extent = d3.extent(data, d => d.orders);
+        
+        
+        const y = d3.scaleLinear()
+            .domain([0,max])
+            .range([0,graphHeight]);
+        
 
-    group.append('text')
-        .attr('x', 20)
-        .attr('y', 200)
-        .attr('fill', 'red')
-        .text('Hello, Ninja')
-        .style('font-family', 'arial');
+        const x = d3.scaleBand()
+            .domain(data.map(item => item.name))
+            .range(([0,graphWidth]))
+            .paddingInner(0.2)
+            .paddingOuter(0.2);
+            
 
+        const rects = graph.selectAll('.rect')
+            .data(data);
+    
+         // append the enter selection to the DOM
+        rects.enter()
+            .append('rect')
+            .attr('width', x.bandwidth)
+            .attr('height', d => y(d.orders))
+            .attr('fill', 'orange')
+            .attr('x', d => x(d.name));
+       
+    })
+
+  
